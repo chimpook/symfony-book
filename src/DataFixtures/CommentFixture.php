@@ -25,7 +25,7 @@ class CommentFixture extends Fixture implements DependentFixtureInterface
         $conferences = $manager->getRepository(Conference::class)->findAll();
         foreach ($conferences as $conference) {
             $num_comments = rand(1,12);
-            for ($i = 0; $i < 10; $i++) {
+            for ($i = 0; $i < $num_comments; $i++) {
                 $manager->persist($this->getComment($conference));
             }
         }
