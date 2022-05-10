@@ -27,8 +27,11 @@ class Conference
     #[ORM\OneToMany(mappedBy: 'conference', targetEntity: Comment::class, orphanRemoval: true)]
     private $comments;
 
-    public function __construct()
+    public function __construct(string $city, string $year, bool $isInternational)
     {
+        $this->city = $city;
+        $this->year = $year;
+        $this->isInternational = $isInternational;
         $this->comments = new ArrayCollection();
     }
 
