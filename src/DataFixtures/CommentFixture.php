@@ -40,7 +40,7 @@ class CommentFixture extends Fixture implements DependentFixtureInterface
         $comment->setEmail($this->faker->email());
         $comment->setCreatedAt(\DateTimeImmutable::createFromMutable($this->faker->dateTimeThisDecade()));
         $comment->setConference($conference);
-        $comment->setPhotoFilename($this->faker->imageUrl(640, 480));
+        $comment->setPhotoFilename('https://picsum.photos/seed/' . rand() . '/320/240');
 
         return $comment;
     }
