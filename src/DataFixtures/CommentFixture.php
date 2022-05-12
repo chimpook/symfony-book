@@ -36,7 +36,7 @@ class CommentFixture extends Fixture implements DependentFixtureInterface
     {
         $comment = new Comment();
         $comment->setAuthor($this->faker->name());
-        $comment->setText($this->faker->country());
+        $comment->setText($this->faker->realtext());
         $comment->setEmail($this->faker->email());
         $comment->setCreatedAt(\DateTimeImmutable::createFromMutable($this->faker->dateTimeThisDecade()));
         $comment->setConference($conference);
