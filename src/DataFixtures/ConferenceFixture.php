@@ -27,10 +27,10 @@ class ConferenceFixture extends Fixture
 
     private function getConference(): Conference
     {
-        return new Conference(
-            $this->faker->city(),
-            $this->faker->year(),
-            rand(0,1) == 1
-        );
+        $conference = new Conference();
+        $conference->setCity($this->faker->city());
+        $conference->setYear($this->faker->year());
+        $conference->setIsInternational(rand(0,1) == 1);
+        return $conference;
     }
 }
