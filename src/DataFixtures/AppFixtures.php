@@ -3,13 +3,14 @@
 namespace App\DataFixtures;
 
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
 use App\Entity\Comment;
 use App\Entity\Conference;
 use App\Entity\Admin;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 
-class AppFixtures extends Fixture
+class AppFixtures extends Fixture implements FixtureGroupInterface
 {
     private $passwordHasherFactory;
 
@@ -49,5 +50,10 @@ class AppFixtures extends Fixture
         $manager->persist($admin);
 
         $manager->flush();
+    }
+
+    public static function getGroups(): array
+    {
+        return ['test'];
     }
 }
