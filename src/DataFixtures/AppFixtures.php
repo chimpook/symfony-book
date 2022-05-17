@@ -6,9 +6,18 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use App\Entity\Comment;
 use App\Entity\Conference;
+use App\Entity\Admin;
+use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 
 class AppFixtures extends Fixture
 {
+    private $passwordHasherFactory;
+
+    public function __construct(PasswordHasherFactoryInterface $encoderFactory)
+    {
+        $this->passwordHasherFactory = $encoderFactory;
+    }
+
     public function load(ObjectManager $manager): void
     {
         // $product = new Product();
@@ -25,13 +34,19 @@ class AppFixtures extends Fixture
         $paris->setYear('2020');
         $paris->setIsInternational(false);
         $manager->persist($paris);
-        
+
         $comment1 = new Comment();
         $comment1->setConference($amsterdam);
         $comment1->setAuthor('Fabien');
         $comment1->setEmail('fabien@example.com');
         $comment1->setText('This was a great conference.');
         $manager->persist($comment1);
+
+        $admin = new Admin();
+        $admin->setRoles(['ROLE_ADMIN']);
+        $admin->setUsername('admin');
+        $admin->setPassword($this->passwordHasherFactory->getPasswordHasher(Admin::class)->hash('admin', null));
+        $manager->persist($admin);
 
         $manager->flush();
     }
