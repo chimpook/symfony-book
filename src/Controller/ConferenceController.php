@@ -14,12 +14,14 @@ use App\Entity\Comment;
 use App\Form\CommentFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use App\SpamChecker;
+use App\Message\CommentMessage;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class ConferenceController extends AbstractController
 {
     private $twig;
     private $entityManager;
+    private $bus;
 
     public function __construct(Environment $twig, EntityManagerInterface $entityManager)
     {
@@ -36,7 +38,7 @@ class ConferenceController extends AbstractController
     }
 
     #[Route('/conference/{slug}', name: 'conference')]
-    public function show(Request $request, Conference $conference, CommentRepository $commentRepository, string $photoDir, SpamChecker $spamChecker): Response
+    public function show(Request $request, Conference $conference, CommentRepository $commentRepository, string $photoDir): Response
     {
         $comment = new Comment();
         $form = $this->createForm(CommentFormType::class, $comment);
@@ -56,6 +58,7 @@ class ConferenceController extends AbstractController
             }
 
             $this->entityManager->persist($comment);
+            $this->entityManager->flush();
 
             $context = [
                 'user_ip' => $request->getClientIp(),
@@ -64,16 +67,8 @@ class ConferenceController extends AbstractController
                 'permalink' => $request->getUri(),
             ];
 
-            if (2 === $spamChecker->getSpamScore($comment, $context)) {
-                throw new \RuntimeException('Blatant spam, go away!');
-            }
-
-            if (1 === $spamChecker->getSpamScore($comment, $context)) {
-                throw new \RuntimeException('May be spam, may be not. Whatever, go away..');
-            }
-
-            $this->entityManager->flush();
-
+            $this->bus->dispatch(new CommentMessage($comment->getId(), $context));
+            
             return $this->redirectToRoute('conference', ['slug' => $conference->getSlug()]);
         }
 
