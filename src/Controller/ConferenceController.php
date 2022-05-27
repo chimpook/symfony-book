@@ -23,10 +23,11 @@ class ConferenceController extends AbstractController
     private $entityManager;
     private $bus;
 
-    public function __construct(Environment $twig, EntityManagerInterface $entityManager)
+    public function __construct(Environment $twig, EntityManagerInterface $entityManager, MessageBusInterface $bus)
     {
         $this->twig = $twig;
         $this->entityManager = $entityManager;
+        $this->bus = $bus;
     }
 
     #[Route('/', name: 'homepage')]
